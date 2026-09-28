@@ -1,6 +1,6 @@
 # cognitive-cuas
 
-Kendi jammer'ımı yaptım, sonra ondan kaçan sistemi de kendim yaptım. Saldırıyı da savunmayı da tek elden kurdum.
+Sistemi bogdum, sonra ondan kaçan sistemi de kendim yaptım. Saldırıyı da savunmayı da tek elden kurdum.
 
 Küçük ölçekli bir **C-UAS / Electronic Warfare** döngüsü — gerçek RF donanımıyla, uçtan uca:
 
