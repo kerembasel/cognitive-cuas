@@ -44,7 +44,7 @@ void setup() {
 void kanalDegistir(int yeniKanal) {
   if (!ayarBasarili) return;
   
-  Serial.println("\n🚨 [ALARM] Havadan Kacis Emri Yakalandi!");
+  Serial.println("\n[BILGI] Havadan Frekans Kaydirma Emri Alindi.");
   Serial.print(">>> Yeni Guvenli Kanal Ayarlaniyor: ");
   Serial.println(yeniKanal);
 

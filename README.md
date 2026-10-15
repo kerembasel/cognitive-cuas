@@ -1,18 +1,18 @@
 # cognitive-cuas
 
-Sistemi bogdum, sonra ondan kaçan sistemi de kendim yaptım. Saldırıyı da savunmayı da tek elden kurdum.
+Önce kontrollü bir RF girişim senaryosu kurdum, sonra o girişim altında bağlantısını koruyabilen sistemi de kendim yaptım. Test sinyalini de savunmayı da tek elden tasarladım.
 
-Küçük ölçekli bir **C-UAS / Electronic Warfare** döngüsü — gerçek RF donanımıyla, uçtan uca:
+Küçük ölçekli bir **C-UAS / RF spektrum izleme** döngüsü — gerçek RF donanımıyla, uçtan uca:
 
-**tespit → karar → otonom kaçış**
+**tespit → karar → otonom frekans kaydırma**
 
 ---
 
 ## Ne yapıyor
 
--  **Jammer** (`jammmr.py` / ESP32 + LoRa E22) — 868 MHz kanalını sinyal doygunluğuna boğar. Kırmızı takım.
--  **Kognitif Radar** (`akbaba.py` / Raspberry Pi 4 + RTL-SDR) — RF ortamını dinler, ham IQ verisini Python'da FFT ile analiz eder, güç spektral yoğunluğunu hesaplar ve jammer'ı milisaniyeler içinde tespit eder.
--  **Otonom Ajan** (`ajan.py` / ESP32 + LoRa) — radardan gelen kaçış emrini alır, sürüyü temiz banda kaydırır. Link kopmaz.
+-  **Girişim Üreteci** (`girisim_ureteci.py` / ESP32 + LoRa E22) — kontrollü test amacıyla 868 MHz kanalını sinyal doygunluğuna getirir. Test tarafı.
+-  **Kognitif Radar** (`akbaba.py` / Raspberry Pi 4 + RTL-SDR) — RF ortamını dinler, ham IQ verisini Python'da FFT ile analiz eder, güç spektral yoğunluğunu hesaplar ve girişimi milisaniyeler içinde tespit eder.
+-  **Otonom Ajan** (`ajan.py` / ESP32 + LoRa) — radardan gelen frekans kaydırma emrini alır, sistemi temiz banda taşır. Link kopmaz.
 
 ---
 
@@ -26,9 +26,9 @@ Küçük ölçekli bir **C-UAS / Electronic Warfare** döngüsü — gerçek RF 
 
 ---
 
-## En büyük kavga
+## En büyük mühendislik problemi
 
-Jammer aktifken kaçış komutunun ta kendisi jammer'ın gürültüsüyle havada çarpışıyordu (packet collision) ve alıcıyı sağırlaştırıyordu. Alıcı tarafında, gürültüye gömülü kirli paketlerin içinden hedef frekansı çekip çıkaran bir pattern-extraction filtresiyle çözdüm.
+Girişim aktifken, frekans kaydırma komutunun kendisi de girişim gürültüsüyle havada çarpışıyordu (packet collision) ve alıcıyı sağırlaştırıyordu. Alıcı tarafında, gürültüye gömülü bozuk paketlerin içinden hedef frekansı çekip çıkaran bir pattern-extraction filtresiyle çözdüm.
 
 ---
 

@@ -4,7 +4,7 @@ import time
 import serial
 
 print("=========================================================")
-print("=== FHSS TABANLI SPEKTRUM RADARI VE C2 SİSTEMİ ===")
+print("=== FHSS TABANLI SPEKTRUM İZLEME VE KOORDİNASYON SİSTEMİ ===")
 print("=========================================================")
 
 # --- AJAN ESP HABERLEŞME KURULUMU ---
@@ -27,7 +27,7 @@ except Exception as e:
 
 DB_THRESHOLD = 45.0
 
-# Sadece Jammer'ın zıpladığı 3 stratejik FHSS frekansına odaklanıyoruz
+# Girişim kaynağının zıpladığı 3 FHSS frekansına odaklanıyoruz
 frekans_haritasi = [860, 890, 920]
 fft_size = 8 * 1024
 son_kacis_emri_zamani = 0
@@ -52,28 +52,28 @@ try:
             peak_idx = np.argmax(power)
             guc = power[peak_idx]
 
-            # Nokta atışı düşman yakalama şartı
+            # Girişim tespit şartı
             if guc > DB_THRESHOLD:
                 freqs = np.fft.fftshift(np.fft.fftfreq(fft_size, 1/sdr.sample_rate))
                 tam_frekans = f + (freqs[peak_idx] / 1e6)
 
                 zaman = time.strftime("%H:%M:%S")
-                print(f"[{zaman}] 💥 FHSS YAKALAMA! Frekans: {tam_frekans:.2f} MHz | Güç: {guc:.1f} dB")
+                print(f"[{zaman}] FHSS GİRİŞİM TESPİT! Frekans: {tam_frekans:.2f} MHz | Güç: {guc:.1f} dB")
 
-                # --- OTONOM SÜRÜ KAÇIŞ KARARI ---
+                # --- OTONOM FREKANS KAYDIRMA KARARI ---
                 su_an = time.time()
                 if su_an - son_kacis_emri_zamani > 3.0:
                     if tam_frekans < 890.0:
-                        hedef_kanal = 70  # Düşman alttaysa (860), Ajan'ı 920 MHz'e (Kanal 70) kaçır
+                        hedef_kanal = 70  # Girişim alttaysa (860), Ajan'ı 920 MHz'e (Kanal 70) taşı
                         yon = "ÜST BANT (920 MHz)"
                     else:
-                        hedef_kanal = 10  # Düşman üstteyse, Ajan'ı 860 MHz'e (Kanal 10) kaçır
+                        hedef_kanal = 10  # Girişim üstteyse, Ajan'ı 860 MHz'e (Kanal 10) taşı
                         yon = "ALT BANT (860 MHz)"
 
                     emir = f"SHIFT_{hedef_kanal}\n"
                     telsiz.write(emir.encode())
                     telsiz.flush()
-                    print(f">>> [KOMUTA EMRİ] Ajan Sürüye {yon} KAÇIŞ Emri İletildi! <<<\n")
+                    print(f">>> [KOORDİNASYON] Ajan {yon} frekans kaydırma emri iletildi. <<<\n")
                     son_kacis_emri_zamani = su_an
 
 except KeyboardInterrupt:
